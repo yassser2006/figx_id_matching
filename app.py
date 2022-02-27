@@ -3,11 +3,11 @@ import face_recognition
 import numpy as np
 from PIL import ImageDraw
 from PIL import Image as Img
-import cv2
+from cv2 import VideoCapture, imencode, imwrite
 
 app = Flask(__name__)
 
-camera = cv2.VideoCapture(0)  # use 0 for web camera
+camera = VideoCapture(0)  # use 0 for web camera
 #  for cctv camera use rtsp://username:password@ip_address:554/user=username_password='password'_channel=channel_number_stream=0.sdp' instead of camera
 def encoding_face(image_url):
     image = face_recognition.load_image_file(image_url)
@@ -87,7 +87,7 @@ def gen_frames():  # generate frame by frame from camera
         else:
 #             cv2.waitKey(1000)
 #             cv2.imwrite('id_photo.jpg',frame)
-            ret, buffer = cv2.imencode('.jpg', frame)
+            ret, buffer = imencode('.jpg', frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
@@ -96,14 +96,14 @@ def gen_frames():  # generate frame by frame from camera
 def id_photo():
     success, frame = camera.read()  # read the camera frame
     if success:
-        cv2.imwrite('id_photo.jpg',frame)
+        imwrite('id_photo.jpg',frame)
     return video_feed()
 
 @app.route('/person')
 def person():
     success, frame = camera.read()  # read the camera frame
     if success:
-        cv2.imwrite('person.jpg',frame)
+        imwrite('person.jpg',frame)
     return video_feed()     
             
 @app.route('/video_feed')
