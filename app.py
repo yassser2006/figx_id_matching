@@ -1,7 +1,7 @@
 from flask import Flask, render_template, Response
 import face_recognition
 import numpy as np
-from PIL import ImageDraw, ImageTk
+from PIL import ImageDraw
 from PIL import Image as Img
 import cv2
 
